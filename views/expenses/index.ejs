@@ -1,0 +1,56 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1>My Expenses</h1>
+      <a href="/expenses/new" class="btn">+ Submit claim</a>
+    </div>
+    <%- include('../partials/flash') %>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">Pending</div>
+        <div class="value">₹<%= totals.pending.toLocaleString('en-IN') %></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Approved</div>
+        <div class="value">₹<%= totals.approved.toLocaleString('en-IN') %></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Paid</div>
+        <div class="value">₹<%= totals.paid.toLocaleString('en-IN') %></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>My claims</h2>
+      <% if (claims.length === 0) { %>
+        <p class="empty">No expense claims yet.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Category</th><th>Project</th><th>Amount</th>
+              <th>Description</th><th>Status</th><th>Reviewer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% claims.forEach(function(c) { %>
+              <tr>
+                <td><%= c.expense_date %></td>
+                <td><%= c.category %></td>
+                <td><%= c.project_code || '—' %></td>
+                <td><%= c.currency %> <%= c.amount.toLocaleString('en-IN') %></td>
+                <td><%= c.description || '—' %></td>
+                <td><span class="badge badge-status-<%= c.status %>"><%= c.status %></span></td>
+                <td><%= c.reviewer_name || '—' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </main>
+</div>
+</body></html>

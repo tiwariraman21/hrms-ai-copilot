@@ -1,0 +1,87 @@
+<div id="ai-chat-button">
+    AI
+</div>
+
+<div id="ai-chat-container" class="hidden">
+
+    <!-- =========================
+         CHAT HEADER
+    ========================== -->
+
+    <div id="ai-chat-header">
+        HRMS AI Assistant
+    </div>
+
+    <!-- =========================
+         CHAT MESSAGES
+    ========================== -->
+
+    <div id="ai-chat-messages"></div>
+
+    <!-- =========================
+         ROLE-BASED AI SUGGESTIONS
+    ========================== -->
+
+    <% if (
+        currentUser.role === 'manager' ||
+        currentUser.role === 'hr' ||
+        currentUser.role === 'admin'
+    ) { %>
+
+        <div id="ai-suggestions">
+
+            <button class="ai-suggestion">
+                Approve all leaves
+            </button>
+
+            <button class="ai-suggestion">
+                Approve all expenses
+            </button>
+
+            <button class="ai-suggestion">
+                Approve all timesheets
+            </button>
+
+        </div>
+
+    <% } %>
+
+    <% if (currentUser.role === 'employee') { %>
+
+        <div id="ai-suggestions">
+
+            <button class="ai-suggestion">
+                Apply leave tomorrow
+            </button>
+
+            <button class="ai-suggestion">
+                Log 8 hours for Customer Portal Revamp
+            </button>
+
+            <button class="ai-suggestion">
+                How many leaves do I have left?
+            </button>
+
+        </div>
+
+    <% } %>
+
+    <!-- =========================
+         INPUT AREA
+    ========================== -->
+
+    <div id="ai-chat-input-area">
+
+        <input
+            type="text"
+            id="ai-chat-input"
+            placeholder="Ask something..."
+        />
+
+        <button id="ai-send-btn">
+            Send
+        </button>
+
+    </div>
+
+</div>

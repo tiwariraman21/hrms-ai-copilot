@@ -1,0 +1,108 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1><%= employee ? 'Edit Employee' : 'Add Employee' %></h1>
+    </div>
+    <% (error || []).forEach(function(msg) { %>
+      <div class="alert alert-error"><%= msg %></div>
+    <% }) %>
+    <div class="card">
+      <form method="POST" action="<%= employee ? '/employees/' + employee.id + '/edit' : '/employees/new' %>">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name *</label>
+            <input name="name" required value="<%= employee ? employee.name : '' %>">
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" name="email" required value="<%= employee ? employee.email : '' %>">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Employee code</label>
+            <input name="employee_code" placeholder="e.g. ENG-0042" value="<%= employee ? employee.employee_code || '' : '' %>">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input name="phone" value="<%= employee ? employee.phone || '' : '' %>">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Department</label>
+            <input name="department" placeholder="Engineering, IT, HR, Finance…" value="<%= employee ? employee.department || '' : '' %>">
+          </div>
+          <div class="form-group">
+            <label>Position</label>
+            <input name="position" value="<%= employee ? employee.position || '' : '' %>">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Employment type</label>
+            <select name="employment_type">
+              <% ['', 'Full-time', 'Part-time', 'Contractor', 'Intern'].forEach(function(t) { %>
+                <option value="<%= t %>" <%= employee && employee.employment_type === t ? 'selected' : '' %>><%= t || '— Select —' %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Work location</label>
+            <select name="work_location">
+              <% ['', 'Onsite', 'Hybrid', 'Remote'].forEach(function(l) { %>
+                <option value="<%= l %>" <%= employee && employee.work_location === l ? 'selected' : '' %>><%= l || '— Select —' %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Skills (comma-separated)</label>
+          <input name="skills" placeholder="e.g. Java, Spring, Kafka, AWS" value="<%= employee ? employee.skills || '' : '' %>">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Manager</label>
+            <select name="manager_id">
+              <option value="">— None —</option>
+              <% managers.forEach(function(m) { %>
+                <option value="<%= m.id %>" <%= employee && employee.manager_id === m.id ? 'selected' : '' %>><%= m.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Role *</label>
+            <select name="role" required>
+              <% const roles = user.role === 'admin' ? ['employee', 'manager', 'hr', 'admin'] : ['employee', 'manager', 'hr']; %>
+              <% roles.forEach(function(r) { %>
+                <option value="<%= r %>" <%= employee && employee.role === r ? 'selected' : '' %>><%= r %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <% if (employee) { %>
+            <div class="form-group">
+              <label>Leave balance (days)</label>
+              <input type="number" name="leave_balance" min="0" value="<%= employee.leave_balance %>">
+            </div>
+            <div></div>
+          <% } else { %>
+            <div class="form-group">
+              <label>Initial password *</label>
+              <input type="password" name="password" required minlength="6">
+            </div>
+            <div></div>
+          <% } %>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn" type="submit"><%= employee ? 'Save changes' : 'Create employee' %></button>
+          <a href="/employees" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+</body></html>

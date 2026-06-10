@@ -1,0 +1,42 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1>Pending Leave Approvals</h1>
+    </div>
+    <%- include('../partials/flash') %>
+
+    <% if (rows.length === 0) { %>
+      <div class="card empty">No pending requests.</div>
+    <% } else { %>
+      <table>
+        <thead>
+          <tr><th>Employee</th><th>From</th><th>To</th><th>Type</th><th>Reason</th><th></th></tr>
+        </thead>
+        <tbody>
+          <% rows.forEach(function(r) { %>
+            <tr>
+              <td><%= r.name %><br><small class="muted"><%= r.department || '' %></small></td>
+              <td><%= r.start_date %></td>
+              <td><%= r.end_date %></td>
+              <td><%= r.type %></td>
+              <td><%= r.reason || '—' %></td>
+              <td class="row-actions">
+                <form method="POST" action="/leave/<%= r.id %>/decide" style="display: inline;">
+                  <input type="hidden" name="decision" value="approved">
+                  <button class="btn btn-sm btn-success">Approve</button>
+                </form>
+                <form method="POST" action="/leave/<%= r.id %>/decide" style="display: inline;">
+                  <input type="hidden" name="decision" value="rejected">
+                  <button class="btn btn-sm btn-danger">Reject</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
+</div>
+</body></html>

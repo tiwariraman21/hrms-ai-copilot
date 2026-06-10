@@ -1,0 +1,83 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1>Expense Approvals</h1>
+    </div>
+    <%- include('../partials/flash') %>
+
+    <div class="card">
+      <h2>Pending review (<%= rows.length %>)</h2>
+      <% if (rows.length === 0) { %>
+        <p class="empty">No pending claims.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th><th>Date</th><th>Category</th>
+              <th>Project</th><th>Amount</th><th>Description</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% rows.forEach(function(r) { %>
+              <tr>
+                <td><%= r.name %><br><small class="muted"><%= r.department || '' %></small></td>
+                <td><%= r.expense_date %></td>
+                <td><%= r.category %></td>
+                <td><%= r.project_code || '—' %></td>
+                <td><strong><%= r.currency %> <%= r.amount.toLocaleString('en-IN') %></strong></td>
+                <td><%= r.description || '—' %></td>
+                <td class="row-actions">
+                  <form method="POST" action="/expenses/<%= r.id %>/decide" style="display:inline;">
+                    <input type="hidden" name="decision" value="approved">
+                    <button class="btn btn-sm btn-success">Approve</button>
+                  </form>
+                  <form method="POST" action="/expenses/<%= r.id %>/decide" style="display:inline;">
+                    <input type="hidden" name="decision" value="rejected">
+                    <button class="btn btn-sm btn-danger">Reject</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <% if (user.role === 'admin') { %>
+      <div class="card">
+        <h2>Approved – awaiting payout (<%= approvedAwaitingPayout.length %>)</h2>
+        <% if (approvedAwaitingPayout.length === 0) { %>
+          <p class="empty">Nothing awaiting payout.</p>
+        <% } else { %>
+          <table>
+            <thead>
+              <tr>
+                <th>Employee</th><th>Date</th><th>Category</th>
+                <th>Project</th><th>Amount</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% approvedAwaitingPayout.forEach(function(r) { %>
+                <tr>
+                  <td><%= r.name %></td>
+                  <td><%= r.expense_date %></td>
+                  <td><%= r.category %></td>
+                  <td><%= r.project_code || '—' %></td>
+                  <td><strong><%= r.currency %> <%= r.amount.toLocaleString('en-IN') %></strong></td>
+                  <td>
+                    <form method="POST" action="/expenses/<%= r.id %>/pay" style="display:inline;">
+                      <button class="btn btn-sm">Mark paid</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    <% } %>
+  </main>
+</div>
+</body></html>

@@ -1,0 +1,48 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1>Projects</h1>
+      <% if (canManage) { %>
+        <a href="/projects/new" class="btn">+ New project</a>
+      <% } %>
+    </div>
+    <%- include('../partials/flash') %>
+
+    <% if (projects.length === 0) { %>
+      <div class="card empty">
+        <% if (canManage) { %>No projects yet. Create one to get started.
+        <% } else { %>You are not allocated to any active project.<% } %>
+      </div>
+    <% } else { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th><th>Name</th><th>Client</th><th>Lead</th>
+            <th>Status</th><th>Members</th><th>Timeline</th>
+            <% if (!canManage) { %><th>My role</th><th>My %</th><% } %>
+          </tr>
+        </thead>
+        <tbody>
+          <% projects.forEach(function(p) { %>
+            <tr>
+              <td><a href="/projects/<%= p.id %>"><%= p.code %></a></td>
+              <td><%= p.name %></td>
+              <td><%= p.client || '—' %></td>
+              <td><%= p.lead_name || '—' %></td>
+              <td><span class="badge badge-status-<%= p.status %>"><%= p.status.replace('_', ' ') %></span></td>
+              <td><%= p.members %></td>
+              <td><%= p.start_date || '—' %><% if (p.end_date) { %> → <%= p.end_date %><% } %></td>
+              <% if (!canManage) { %>
+                <td><%= p.my_role || '—' %></td>
+                <td><%= p.my_alloc %>%</td>
+              <% } %>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
+</div>
+</body></html>

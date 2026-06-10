@@ -1,0 +1,22 @@
+<%- include('partials/layout-head') %>
+<% if (user) { %>
+<div class="app">
+  <%- include('partials/sidebar') %>
+  <main class="main">
+    <div class="card">
+      <h2><%= title %></h2>
+      <p class="muted"><%= message %></p>
+      <p style="margin-top: 16px;"><a href="/dashboard" class="btn btn-sm">Back to dashboard</a></p>
+    </div>
+  </main>
+</div>
+<% } else { %>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1><%= title %></h1>
+    <p class="muted" style="text-align: center;"><%= message %></p>
+    <p style="margin-top: 16px; text-align: center;"><a href="/login" class="btn btn-sm">Go to login</a></p>
+  </div>
+</div>
+<% } %>
+</body></html>

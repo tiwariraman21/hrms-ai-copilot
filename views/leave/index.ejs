@@ -1,0 +1,44 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1>My Leave</h1>
+      <a href="/leave/new" class="btn">+ Apply for leave</a>
+    </div>
+    <%- include('../partials/flash') %>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">Available balance</div>
+        <div class="value"><%= balance %> days</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>My requests</h2>
+      <% if (requests.length === 0) { %>
+        <p class="empty">No leave requests yet.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr><th>From</th><th>To</th><th>Type</th><th>Reason</th><th>Status</th><th>Reviewer</th></tr>
+          </thead>
+          <tbody>
+            <% requests.forEach(function(r) { %>
+              <tr>
+                <td><%= r.start_date %></td>
+                <td><%= r.end_date %></td>
+                <td><%= r.type %></td>
+                <td><%= r.reason || '—' %></td>
+                <td><span class="badge badge-<%= r.status %>"><%= r.status %></span></td>
+                <td><%= r.reviewer_name || '—' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </main>
+</div>
+</body></html>

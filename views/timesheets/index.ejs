@@ -1,0 +1,79 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1>My Timesheets</h1>
+      <div style="display: flex; gap: 8px;">
+        <a href="/timesheets/new" class="btn">+ Log time</a>
+        <% if (weekTotals.draft_hours > 0) { %>
+          <form method="POST" action="/timesheets/submit-week" style="display:inline;"
+                onsubmit="return confirm('Submit all draft entries for this week?')">
+            <button class="btn btn-secondary">Submit week</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+    <%- include('../partials/flash') %>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">This week (total)</div>
+        <div class="value"><%= weekTotals.total_hours.toFixed(1) %> h</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Draft</div>
+        <div class="value"><%= weekTotals.draft_hours.toFixed(1) %> h</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Submitted</div>
+        <div class="value"><%= weekTotals.submitted_hours.toFixed(1) %> h</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Approved</div>
+        <div class="value"><%= weekTotals.approved_hours.toFixed(1) %> h</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Recent entries (week of <%= weekStart %>)</h2>
+      <% if (entries.length === 0) { %>
+        <p class="empty">No time logged yet. Click <em>+ Log time</em> to start.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Project</th><th>Hours</th>
+              <th>Task</th><th>Status</th><th>Reviewer</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% entries.forEach(function(e) { %>
+              <tr>
+                <td><%= e.work_date %></td>
+                <td><%= e.project_code %> – <%= e.project_name %></td>
+                <td><strong><%= e.hours.toFixed(2) %></strong></td>
+                <td><%= e.task_description || '—' %></td>
+                <td><span class="badge badge-status-<%= e.status %>"><%= e.status %></span></td>
+                <td><%= e.reviewer_name || '—' %></td>
+                <td class="row-actions">
+                  <% if (e.status === 'draft') { %>
+                    <a href="/timesheets/<%= e.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+                    <form method="POST" action="/timesheets/<%= e.id %>/submit" style="display:inline;">
+                      <button class="btn btn-sm">Submit</button>
+                    </form>
+                    <form method="POST" action="/timesheets/<%= e.id %>/delete" style="display:inline;"
+                          onsubmit="return confirm('Delete this draft entry?')">
+                      <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </main>
+</div>
+</body></html>

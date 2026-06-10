@@ -1,0 +1,227 @@
+<%- include('partials/layout-head') %>
+
+<div class="app">
+  <%- include('partials/sidebar') %>
+
+  <main class="main">
+    
+    <div class="page-header">
+      <h1>Welcome, <%= user.name.split(' ')[0] %></h1>
+      <span class="muted"><%= new Date().toDateString() %></span>
+    </div>
+
+    <!-- =========================
+         STATS GRID
+    ========================== -->
+
+    <div class="stat-grid">
+
+      <% if (user.role === 'manager') { %>
+        <div class="stat-card">
+          <div class="label">My team</div>
+          <div class="value"><%= stats.teamSize %></div>
+        </div>
+      <% } else { %>
+        <div class="stat-card">
+          <div class="label">Employees</div>
+          <div class="value"><%= stats.empCount %></div>
+        </div>
+      <% } %>
+
+      <div class="stat-card">
+        <div class="label">Clocked in today</div>
+        <div class="value"><%= stats.todayAttendance %></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="label">Pending leave</div>
+        <div class="value"><%= stats.pendingLeave %></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="label">Pending expenses</div>
+        <div class="value"><%= stats.pendingExpenses %></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="label">Pending timesheets</div>
+        <div class="value"><%= stats.pendingTimesheets %></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="label">My projects</div>
+        <div class="value"><%= stats.myProjects %></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="label">My leave balance</div>
+        <div class="value"><%= myBalance %></div>
+      </div>
+
+    </div>
+
+    <!-- =========================
+         AI INSIGHTS
+    ========================== -->
+
+    <div class="card ai-insights-card">
+
+      <h2>AI Insights</h2>
+
+      <% insights.forEach(insight => { %>
+
+        <div class="insight-item" style="
+          padding: 12px;
+          margin-bottom: 10px;
+          background: #f7fafc;
+          border-left: 4px solid #667eea;
+          border-radius: 8px;
+        ">
+          <%= insight %>
+        </div>
+
+      <% }) %>
+
+    </div>
+
+    <!-- =========================
+         MY DAY CARD
+    ========================== -->
+
+    <div class="card">
+      <h2>My day</h2>
+
+      <% if (myToday && myToday.clock_in) { %>
+
+        <p>
+          You clocked in at
+          <strong><%= myToday.clock_in %></strong>
+
+          <% if (myToday.clock_out) { %>
+            and out at
+            <strong><%= myToday.clock_out %></strong>
+          <% } %>.
+        </p>
+
+      <% } else { %>
+
+        <p class="muted">
+          You have not clocked in today.
+        </p>
+
+      <% } %>
+
+      <p style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+
+        <a href="/attendance" class="btn btn-sm">
+          Attendance
+        </a>
+
+        <a href="/timesheets/new" class="btn btn-sm btn-secondary">
+          Log time
+        </a>
+
+        <a href="/leave/new" class="btn btn-sm btn-secondary">
+          Apply for leave
+        </a>
+
+        <a href="/expenses/new" class="btn btn-sm btn-secondary">
+          Submit expense
+        </a>
+
+      </p>
+    </div>
+
+    <!-- =========================
+         ADMIN / HR ACTIONS
+    ========================== -->
+
+    <% if (user.role === 'admin' || user.role === 'hr') { %>
+
+      <div class="card">
+
+        <h2>
+          <%= user.role === 'admin' ? 'Admin' : 'HR' %> quick actions
+        </h2>
+
+        <p style="display: flex; gap: 8px; flex-wrap: wrap;">
+
+          <a href="/employees/new" class="btn btn-sm">
+            + Add employee
+          </a>
+
+          <a href="/projects/new" class="btn btn-sm btn-secondary">
+            + New project
+          </a>
+
+          <a href="/leave/pending" class="btn btn-sm btn-secondary">
+            Review leave
+          </a>
+
+          <a href="/expenses/pending" class="btn btn-sm btn-secondary">
+            Review expenses
+          </a>
+
+          <a href="/timesheets/pending" class="btn btn-sm btn-secondary">
+            Review timesheets
+          </a>
+
+          <a href="/attendance/all" class="btn btn-sm btn-secondary">
+            All attendance
+          </a>
+
+        </p>
+
+      </div>
+
+    <!-- =========================
+         MANAGER ACTIONS
+    ========================== -->
+
+    <% } else if (user.role === 'manager') { %>
+
+      <div class="card">
+
+        <h2>Manager actions</h2>
+
+        <p style="display: flex; gap: 8px; flex-wrap: wrap;">
+
+          <a href="/team" class="btn btn-sm">
+            My team
+          </a>
+
+          <a href="/projects/new" class="btn btn-sm btn-secondary">
+            + New project
+          </a>
+
+          <a href="/leave/pending" class="btn btn-sm btn-secondary">
+            Approve leave
+          </a>
+
+          <a href="/expenses/pending" class="btn btn-sm btn-secondary">
+            Approve expenses
+          </a>
+
+          <a href="/timesheets/pending" class="btn btn-sm btn-secondary">
+            Approve timesheets
+          </a>
+
+        </p>
+
+      </div>
+
+    <% } %>
+
+  </main>
+</div>
+
+<!-- =========================
+     AI CHAT COMPONENT
+========================= -->
+
+<%- include('partials/ai-chat') %>
+
+<script src="/ai-chat.js"></script>
+
+</body>
+</html>

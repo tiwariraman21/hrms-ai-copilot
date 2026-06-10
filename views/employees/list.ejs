@@ -1,0 +1,61 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1>Employees</h1>
+      <% if (user.role === 'admin' || user.role === 'hr') { %>
+        <a href="/employees/new" class="btn">+ Add employee</a>
+      <% } %>
+    </div>
+    <%- include('../partials/flash') %>
+
+    <% if (employees.length === 0) { %>
+      <div class="card empty">No employees yet.</div>
+    <% } else { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Manager</th>
+            <th>Role</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% employees.forEach(function(e) { %>
+            <tr>
+              <td><a href="/employees/<%= e.id %>"><%= e.name %></a></td>
+              <td><%= e.employee_code || '—' %></td>
+              <td><%= e.email %></td>
+              <td><%= e.department || '—' %></td>
+              <td><%= e.position || '—' %></td>
+              <td><%= e.employment_type || '—' %></td>
+              <td><%= e.work_location || '—' %></td>
+              <td><%= e.manager_name || '—' %></td>
+              <td><% if (e.role) { %><span class="badge badge-<%= e.role %>"><%= e.role %></span><% } else { %>—<% } %></td>
+              <td class="row-actions">
+                <% const canEdit = user.role === 'admin' || (user.role === 'hr' && e.role !== 'admin'); %>
+                <% if (canEdit) { %>
+                  <a href="/employees/<%= e.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+                <% } %>
+                <% if (user.role === 'admin' && e.id !== user.employee_id) { %>
+                  <form method="POST" action="/employees/<%= e.id %>/delete" onsubmit="return confirm('Delete <%= e.name %>?')" style="display: inline;">
+                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
+</div>
+</body></html>

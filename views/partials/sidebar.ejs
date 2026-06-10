@@ -1,0 +1,40 @@
+<aside class="sidebar">
+  <div class="brand">HRMS</div>
+  <nav>
+    <a href="/dashboard" class="<%= title === 'Dashboard' ? 'active' : '' %>">Dashboard</a>
+    <a href="/employees">Employees</a>
+    <% if (user.role === 'manager' || user.role === 'admin' || user.role === 'hr') { %>
+      <a href="/team"><%= user.role === 'manager' ? 'My Team' : 'Organisation' %></a>
+    <% } %>
+    <div class="nav-section">Time</div>
+    <a href="/attendance">My Attendance</a>
+    <% if (user.role === 'admin' || user.role === 'hr' || user.role === 'manager') { %>
+      <a href="/attendance/all"><%= user.role === 'manager' ? 'Team Attendance' : 'All Attendance' %></a>
+    <% } %>
+    <a href="/timesheets">My Timesheets</a>
+    <% if (user.role === 'admin' || user.role === 'hr' || user.role === 'manager') { %>
+      <a href="/timesheets/pending">Timesheet Approvals</a>
+    <% } %>
+    <div class="nav-section">Leave</div>
+    <a href="/leave">My Leave</a>
+    <% if (user.role === 'admin' || user.role === 'hr' || user.role === 'manager') { %>
+      <a href="/leave/pending">Leave Approvals</a>
+    <% } %>
+    <div class="nav-section">Work</div>
+    <a href="/projects">Projects</a>
+    <a href="/expenses">My Expenses</a>
+    <% if (user.role === 'admin' || user.role === 'hr' || user.role === 'manager') { %>
+      <a href="/expenses/pending">Expense Approvals</a>
+    <% } %>
+    <div class="nav-section">Account</div>
+    <a href="/account/password">Change Password</a>
+  </nav>
+  <div class="user-box">
+    <strong><%= user.name %></strong>
+    <%= user.email %>
+    <div class="role-tag"><%= user.role %></div>
+    <form action="/logout" method="POST" style="margin-top: 12px;">
+      <button type="submit" class="logout-btn">Log out</button>
+    </form>
+  </div>
+</aside>

@@ -1,0 +1,60 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1><%= emp.name %></h1>
+      <% if (user.role === 'admin' || user.role === 'hr') { %>
+        <a href="/employees/<%= emp.id %>/edit" class="btn">Edit</a>
+      <% } %>
+    </div>
+    <div class="card">
+      <dl class="profile-grid">
+        <dt>Employee code</dt><dd><%= emp.employee_code || '—' %></dd>
+        <dt>Email</dt><dd><%= emp.email %></dd>
+        <dt>Phone</dt><dd><%= emp.phone || '—' %></dd>
+        <dt>Department</dt><dd><%= emp.department || '—' %></dd>
+        <dt>Position</dt><dd><%= emp.position || '—' %></dd>
+        <dt>Employment type</dt><dd><%= emp.employment_type || '—' %></dd>
+        <dt>Work location</dt><dd><%= emp.work_location || '—' %></dd>
+        <dt>Skills</dt><dd>
+          <% if (emp.skills) { %>
+            <% emp.skills.split(',').map(function(s){ return s.trim(); }).filter(Boolean).forEach(function(s) { %>
+              <span class="skill-chip"><%= s %></span>
+            <% }) %>
+          <% } else { %>—<% } %>
+        </dd>
+        <dt>Manager</dt><dd><%= emp.manager_name || '—' %></dd>
+        <dt>Joined</dt><dd><%= emp.joined_at %></dd>
+        <dt>Role</dt><dd><% if (emp.role) { %><span class="badge badge-<%= emp.role %>"><%= emp.role %></span><% } else { %>—<% } %></dd>
+        <dt>Leave balance</dt><dd><%= emp.leave_balance %> days</dd>
+      </dl>
+    </div>
+
+    <div class="card">
+      <h2>Project allocations (<%= allocations.length %>)</h2>
+      <% if (allocations.length === 0) { %>
+        <p class="muted">Not allocated to any project.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr><th>Project</th><th>Role</th><th>Allocation %</th><th>Status</th><th>From</th><th>To</th></tr>
+          </thead>
+          <tbody>
+            <% allocations.forEach(function(a) { %>
+              <tr>
+                <td><a href="/projects/<%= a.project_id %>"><%= a.code %></a> – <%= a.name %></td>
+                <td><%= a.role_on_project || '—' %></td>
+                <td><%= a.allocation_percent %>%</td>
+                <td><span class="badge badge-status-<%= a.status %>"><%= a.status.replace('_', ' ') %></span></td>
+                <td><%= a.start_date || '—' %></td>
+                <td><%= a.end_date || '—' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </main>
+</div>
+</body></html>

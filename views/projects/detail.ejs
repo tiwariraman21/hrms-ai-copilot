@@ -1,0 +1,112 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1><%= project.code %> – <%= project.name %></h1>
+      <div style="display: flex; gap: 8px;">
+        <% if (canManage) { %>
+          <a href="/projects/<%= project.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+        <% } %>
+        <% if (user.role === 'admin') { %>
+          <form method="POST" action="/projects/<%= project.id %>/delete"
+                onsubmit="return confirm('Delete project <%= project.code %>? This will remove all allocations and unlink expenses.')"
+                style="display:inline;">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+    <%- include('../partials/flash') %>
+
+    <div class="card">
+      <dl class="profile-grid">
+        <dt>Status</dt><dd><span class="badge badge-status-<%= project.status %>"><%= project.status.replace('_', ' ') %></span></dd>
+        <dt>Client</dt><dd><%= project.client || '—' %></dd>
+        <dt>Lead</dt><dd><%= project.lead_name || '—' %></dd>
+        <dt>Timeline</dt><dd><%= project.start_date || '—' %><% if (project.end_date) { %> → <%= project.end_date %><% } %></dd>
+        <dt>Description</dt><dd><%= project.description || '—' %></dd>
+      </dl>
+    </div>
+
+    <div class="card">
+      <h2>Allocations (<%= allocations.length %>)</h2>
+      <% if (allocations.length === 0) { %>
+        <p class="muted">No team members allocated yet.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th><th>Department</th><th>Role on project</th>
+              <th>Allocation %</th><th>From</th><th>To</th>
+              <% if (canManage) { %><th></th><% } %>
+            </tr>
+          </thead>
+          <tbody>
+            <% allocations.forEach(function(a) { %>
+              <tr>
+                <td><a href="/employees/<%= a.employee_id %>"><%= a.name %></a></td>
+                <td><%= a.department || '—' %></td>
+                <td><%= a.role_on_project || '—' %></td>
+                <td><%= a.allocation_percent %>%</td>
+                <td><%= a.start_date || '—' %></td>
+                <td><%= a.end_date || '—' %></td>
+                <% if (canManage) { %>
+                  <td>
+                    <form method="POST" action="/projects/<%= project.id %>/allocations/<%= a.id %>/remove"
+                          onsubmit="return confirm('Remove <%= a.name %> from this project?')"
+                          style="display:inline;">
+                      <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+                    </form>
+                  </td>
+                <% } %>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <% if (canManage && candidates.length > 0) { %>
+      <div class="card">
+        <h2>Allocate an employee</h2>
+        <form method="POST" action="/projects/<%= project.id %>/allocate">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Employee *</label>
+              <select name="employee_id" required>
+                <option value="">— Select —</option>
+                <% candidates.forEach(function(c) { %>
+                  <option value="<%= c.id %>"><%= c.name %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Role on project</label>
+              <input name="role_on_project" placeholder="e.g. Backend Developer">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Allocation % *</label>
+              <input type="number" name="allocation_percent" min="0" max="100" value="100" required>
+            </div>
+            <div class="form-group">
+              <label>Start date</label>
+              <input type="date" name="start_date">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>End date</label>
+              <input type="date" name="end_date">
+            </div>
+            <div></div>
+          </div>
+          <button class="btn" type="submit">Add allocation</button>
+        </form>
+      </div>
+    <% } %>
+  </main>
+</div>
+</body></html>

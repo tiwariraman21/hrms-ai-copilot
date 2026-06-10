@@ -1,0 +1,67 @@
+<%- include('../partials/layout-head') %>
+<div class="app">
+  <%- include('../partials/sidebar') %>
+  <main class="main">
+    <div class="page-header">
+      <h1><%= title %></h1>
+      <% if (pendingLeave > 0) { %>
+        <a href="/leave/pending" class="btn btn-sm">Review <%= pendingLeave %> pending leave</a>
+      <% } %>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">Team size</div>
+        <div class="value"><%= members.length %></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Clocked in today</div>
+        <div class="value"><%= members.filter(function(m){ return m.clock_in_today; }).length %></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Pending leave</div>
+        <div class="value"><%= pendingLeave %></div>
+      </div>
+    </div>
+
+    <% if (members.length === 0) { %>
+      <div class="card empty">No team members.</div>
+    <% } else { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Today</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% members.forEach(function(m) { %>
+            <tr>
+              <td><a href="/employees/<%= m.id %>"><%= m.name %></a></td>
+              <td><%= m.employee_code || '—' %></td>
+              <td><%= m.department || '—' %></td>
+              <td><%= m.position || '—' %></td>
+              <td><%= m.employment_type || '—' %></td>
+              <td><%= m.work_location || '—' %></td>
+              <td>
+                <% if (m.clock_in_today) { %>
+                  <%= m.clock_in_today %><% if (m.clock_out_today) { %> – <%= m.clock_out_today %><% } %>
+                <% } else { %>
+                  <span class="muted">—</span>
+                <% } %>
+              </td>
+              <td><% if (m.role) { %><span class="badge badge-<%= m.role %>"><%= m.role %></span><% } else { %>—<% } %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
+</div>
+</body></html>

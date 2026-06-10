@@ -1,0 +1,31 @@
+<%- include('partials/layout-head') %>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1>HRMS Login</h1>
+    <% (error || []).forEach(function(msg) { %>
+      <div class="alert alert-error"><%= msg %></div>
+    <% }) %>
+    <% (info || []).forEach(function(msg) { %>
+      <div class="alert alert-info"><%= msg %></div>
+    <% }) %>
+    <form method="POST" action="/login">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autofocus>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn-block">Log In</button>
+    </form>
+    <div class="muted" style="margin-top: 20px; font-size: 12px; text-align: center; line-height: 1.6;">
+      Demo logins:<br>
+      <code>admin@hrms.local / admin123</code><br>
+      <code>hr@hrms.local / hr123</code><br>
+      <code>sarah@hrms.local / manager123</code><br>
+      <code>john@hrms.local / employee123</code>
+    </div>
+  </div>
+</div>
+</body></html>
