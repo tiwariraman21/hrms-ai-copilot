@@ -1,40 +1,385 @@
 <aside class="sidebar">
-  <div class="brand">HRMS</div>
-  <nav>
-    <a href="/dashboard" class="<%= title === 'Dashboard' ? 'active' : '' %>">Dashboard</a>
-    <a href="/employees">Employees</a>
-    <% if (user.role === 'manager' || user.role === 'admin' || user.role === 'hr') { %>
-      <a href="/team"><%= user.role === 'manager' ? 'My Team' : 'Organisation' %></a>
-    <% } %>
-    <div class="nav-section">Time</div>
-    <a href="/attendance">My Attendance</a>
-    <% if (user.role === 'admin' || user.role === 'hr' || user.role === 'manager') { %>
-      <a href="/attendance/all"><%= user.role === 'manager' ? 'Team Attendance' : 'All Attendance' %></a>
-    <% } %>
-    <a href="/timesheets">My Timesheets</a>
-    <% if (user.role === 'admin' || user.role === 'hr' || user.role === 'manager') { %>
-      <a href="/timesheets/pending">Timesheet Approvals</a>
-    <% } %>
-    <div class="nav-section">Leave</div>
-    <a href="/leave">My Leave</a>
-    <% if (user.role === 'admin' || user.role === 'hr' || user.role === 'manager') { %>
-      <a href="/leave/pending">Leave Approvals</a>
-    <% } %>
-    <div class="nav-section">Work</div>
-    <a href="/projects">Projects</a>
-    <a href="/expenses">My Expenses</a>
-    <% if (user.role === 'admin' || user.role === 'hr' || user.role === 'manager') { %>
-      <a href="/expenses/pending">Expense Approvals</a>
-    <% } %>
-    <div class="nav-section">Account</div>
-    <a href="/account/password">Change Password</a>
-  </nav>
-  <div class="user-box">
-    <strong><%= user.name %></strong>
-    <%= user.email %>
-    <div class="role-tag"><%= user.role %></div>
-    <form action="/logout" method="POST" style="margin-top: 12px;">
-      <button type="submit" class="logout-btn">Log out</button>
-    </form>
+
+  <!-- =========================
+       BRAND
+  ========================== -->
+
+  <div class="brand">
+
+    <div class="brand-logo">
+      ✦
+    </div>
+
+    <div class="brand-text">
+      <strong>HRMS</strong>
+      <span>AI Workforce</span>
+    </div>
+
   </div>
+
+
+  <!-- =========================
+       NAVIGATION
+  ========================== -->
+
+  <nav class="sidebar-nav">
+
+    <!-- Dashboard -->
+
+    <a
+      href="/dashboard"
+      class="<%= title === 'Dashboard' ? 'active' : '' %>"
+    >
+      <span class="nav-icon">⌂</span>
+      <span class="nav-label">Dashboard</span>
+    </a>
+
+
+    <!-- =========================
+         ORGANISATION
+    ========================== -->
+
+    <div class="nav-section">
+      Organisation
+    </div>
+
+    <a href="/employees">
+      <span class="nav-icon">👥</span>
+      <span class="nav-label">Employees</span>
+    </a>
+
+    <% if (
+      user.role === 'manager' ||
+      user.role === 'admin' ||
+      user.role === 'hr'
+    ) { %>
+
+      <a href="/team">
+
+        <span class="nav-icon">
+          <%= user.role === 'manager' ? '👤' : '🏢' %>
+        </span>
+
+        <span class="nav-label">
+          <%= user.role === 'manager'
+            ? 'My Team'
+            : 'Organisation'
+          %>
+        </span>
+
+      </a>
+
+    <% } %>
+
+
+    <!-- =========================
+         TIME
+    ========================== -->
+
+    <div class="nav-section">
+      Time
+    </div>
+
+    <a href="/attendance">
+
+      <span class="nav-icon">
+        🕒
+      </span>
+
+      <span class="nav-label">
+        My Attendance
+      </span>
+
+    </a>
+
+
+    <% if (
+      user.role === 'admin' ||
+      user.role === 'hr' ||
+      user.role === 'manager'
+    ) { %>
+
+      <a href="/attendance/all">
+
+        <span class="nav-icon">
+          📊
+        </span>
+
+        <span class="nav-label">
+          <%= user.role === 'manager'
+            ? 'Team Attendance'
+            : 'All Attendance'
+          %>
+        </span>
+
+      </a>
+
+    <% } %>
+
+
+    <a href="/timesheets">
+
+      <span class="nav-icon">
+        ⏱
+      </span>
+
+      <span class="nav-label">
+        My Timesheets
+      </span>
+
+    </a>
+
+
+    <% if (
+      user.role === 'admin' ||
+      user.role === 'hr' ||
+      user.role === 'manager'
+    ) { %>
+
+      <a href="/timesheets/pending">
+
+        <span class="nav-icon">
+          ✓
+        </span>
+
+        <span class="nav-label">
+          Timesheet Approvals
+        </span>
+
+      </a>
+
+    <% } %>
+
+
+    <!-- =========================
+         LEAVE
+    ========================== -->
+
+    <div class="nav-section">
+      Leave
+    </div>
+
+
+    <a href="/leave">
+
+      <span class="nav-icon">
+        📅
+      </span>
+
+      <span class="nav-label">
+        My Leave
+      </span>
+
+    </a>
+
+
+    <% if (
+      user.role === 'admin' ||
+      user.role === 'hr' ||
+      user.role === 'manager'
+    ) { %>
+
+      <a href="/leave/pending">
+
+        <span class="nav-icon">
+          ✓
+        </span>
+
+        <span class="nav-label">
+          Leave Approvals
+        </span>
+
+      </a>
+
+    <% } %>
+
+
+    <!-- =========================
+         WORK
+    ========================== -->
+
+    <div class="nav-section">
+      Work
+    </div>
+
+
+    <a href="/projects">
+
+      <span class="nav-icon">
+        📁
+      </span>
+
+      <span class="nav-label">
+        Projects
+      </span>
+
+    </a>
+
+
+    <a href="/expenses">
+
+      <span class="nav-icon">
+        💳
+      </span>
+
+      <span class="nav-label">
+        My Expenses
+      </span>
+
+    </a>
+
+
+    <% if (
+      user.role === 'admin' ||
+      user.role === 'hr' ||
+      user.role === 'manager'
+    ) { %>
+
+      <a href="/expenses/pending">
+
+        <span class="nav-icon">
+          ✓
+        </span>
+
+        <span class="nav-label">
+          Expense Approvals
+        </span>
+
+      </a>
+
+    <% } %>
+
+
+    <!-- =========================
+         ACCOUNT
+    ========================== -->
+
+    <div class="nav-section">
+      Account
+    </div>
+
+
+    <a href="/account/password">
+
+      <span class="nav-icon">
+        ⚙
+      </span>
+
+      <span class="nav-label">
+        Change Password
+      </span>
+
+    </a>
+
+  </nav>
+
+
+  <!-- =========================
+       USER PROFILE
+  ========================== -->
+
+  <div class="sidebar-user">
+
+    <div class="user-avatar">
+      <%= user.name
+        .split(' ')
+        .map(n => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+      %>
+    </div>
+
+
+    <div class="user-details">
+
+      <strong>
+        <%= user.name %>
+      </strong>
+
+      <span>
+        <%= user.email %>
+      </span>
+
+      <div class="role-tag">
+        <%= user.role %>
+      </div>
+
+    </div>
+
+
+    <form
+      action="/logout"
+      method="POST"
+      class="logout-form"
+    >
+
+      <button
+        type="submit"
+        class="logout-btn"
+        title="Log out"
+      >
+        ↪
+      </button>
+
+    </form>
+
+  </div>
+
 </aside>
+
+@media (max-width: 800px) {
+
+  .sidebar {
+
+    width: 78px;
+  }
+
+  .brand {
+
+    justify-content: center;
+    padding: 20px 10px !important;
+  }
+
+  .brand-text {
+
+    display: none;
+  }
+
+  .sidebar nav a {
+
+    justify-content: center;
+
+    padding: 11px;
+  }
+
+  .nav-label {
+
+    display: none;
+  }
+
+  .sidebar nav .nav-section {
+
+    text-align: center;
+
+    padding-left: 0;
+
+    padding-right: 0;
+
+    font-size: 7px;
+  }
+
+  .sidebar-user {
+
+    justify-content: center;
+
+    padding: 12px 8px;
+  }
+
+  .user-details,
+  .logout-form {
+
+    display: none;
+  }
+
+}
