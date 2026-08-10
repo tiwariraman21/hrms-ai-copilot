@@ -266,3 +266,78 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`HRMS running at http://localhost:${PORT}`);
 });
+
+/* =========================
+   DASHBOARD ANALYTICS
+========================= */
+
+/* Attendance trend - last 7 days */
+
+const attendanceTrend = db.prepare(`
+  SELECT
+    date,
+    COUNT(*) AS count
+  FROM attendance
+  WHERE date >= date('now', '-6 days')
+    AND clock_in IS NOT NULL
+  GROUP BY date
+  ORDER BY date
+`).all();
+
+/* Leave status overview */
+
+const leaveOverview = db.prepare(`
+  SELECT
+    status,
+    COUNT(*) AS count
+  FROM leave_requests
+  GROUP BY status
+`).all();
+
+/* Expense status overview */
+
+const expenseOverview = db.prepare(`
+  SELECT
+    status,
+    COUNT(*) AS count
+  FROM expense_claims
+  GROUP BY status
+`).all();
+
+/* Recent activity */
+
+const recentActivity = db.prepare(`
+  SELECT
+    'Leave Request' AS activity_type,
+    e.name AS employee_name,
+    lr.created_at AS activity_date,
+    lr.status AS status
+  FROM leave_requests lr
+  JOIN employees e
+    ON e.id = lr.employee_id
+
+  UNION ALL
+
+  SELECT
+    'Expense Claim' AS activity_type,
+    e.name AS employee_name,
+    ec.created_at AS activity_date,
+    ec.status AS status
+  FROM expense_claims ec
+  JOIN employees e
+    ON e.id = ec.employee_id
+
+  UNION ALL
+
+  SELECT
+    'Timesheet' AS activity_type,
+    e.name AS employee_name,
+    t.created_at AS activity_date,
+    t.status AS status
+  FROM timesheet_entries t
+  JOIN employees e
+    ON e.id = t.employee_id
+
+  ORDER BY activity_date DESC
+  LIMIT 8
+`).all();
