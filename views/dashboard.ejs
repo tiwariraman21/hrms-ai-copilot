@@ -643,7 +643,204 @@
       </div>
 
     </div>
+<!-- =========================
+     WORKFORCE ANALYTICS
+========================== -->
 
+<div class="analytics-section">
+
+  <div class="analytics-heading">
+
+    <div>
+
+      <span class="section-eyebrow">
+        ANALYTICS
+      </span>
+
+      <h2>Workforce Overview</h2>
+
+      <p>
+        A quick view of recent HRMS activity.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="analytics-grid">
+
+    <!-- Attendance -->
+
+    <div class="card analytics-card">
+
+      <div class="analytics-card-header">
+
+        <div>
+
+          <span class="analytics-label">
+            ATTENDANCE
+          </span>
+
+          <h3>7-Day Attendance Trend</h3>
+
+        </div>
+
+        <div class="analytics-icon">
+          📈
+        </div>
+
+      </div>
+
+      <div class="chart-container">
+
+        <canvas id="attendanceChart"></canvas>
+
+      </div>
+
+    </div>
+
+
+    <!-- Leave -->
+
+    <div class="card analytics-card">
+
+      <div class="analytics-card-header">
+
+        <div>
+
+          <span class="analytics-label">
+            LEAVE
+          </span>
+
+          <h3>Leave Overview</h3>
+
+        </div>
+
+        <div class="analytics-icon">
+          📅
+        </div>
+
+      </div>
+
+      <div class="chart-container chart-small">
+
+        <canvas id="leaveChart"></canvas>
+
+      </div>
+
+    </div>
+
+
+    <!-- Expenses -->
+
+    <div class="card analytics-card">
+
+      <div class="analytics-card-header">
+
+        <div>
+
+          <span class="analytics-label">
+            EXPENSES
+          </span>
+
+          <h3>Expense Status</h3>
+
+        </div>
+
+        <div class="analytics-icon">
+          💰
+        </div>
+
+      </div>
+
+      <div class="chart-container chart-small">
+
+        <canvas id="expenseChart"></canvas>
+
+      </div>
+
+    </div>
+
+
+    <!-- Recent Activity -->
+
+    <div class="card analytics-card">
+
+      <div class="analytics-card-header">
+
+        <div>
+
+          <span class="analytics-label">
+            ACTIVITY
+          </span>
+
+          <h3>Recent Activity</h3>
+
+        </div>
+
+        <div class="analytics-icon">
+          ⚡
+        </div>
+
+      </div>
+
+      <div class="activity-list">
+
+        <% if (
+          analytics.recentActivity &&
+          analytics.recentActivity.length
+        ) { %>
+
+          <% analytics.recentActivity.forEach(activity => { %>
+
+            <div class="activity-item">
+
+              <div class="activity-dot"></div>
+
+              <div class="activity-content">
+
+                <strong>
+                  <%= activity.employee_name %>
+                </strong>
+
+                <span>
+                  <%= activity.activity_type %>
+                </span>
+
+              </div>
+
+              <div class="activity-status">
+
+                <span class="badge badge-status-<%= activity.status %>">
+
+                  <%= activity.status %>
+
+                </span>
+
+              </div>
+
+            </div>
+
+          <% }) %>
+
+        <% } else { %>
+
+          <div class="empty">
+
+            No recent activity.
+
+          </div>
+
+        <% } %>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
   </main>
 
@@ -654,9 +851,7 @@
      AI CHAT COMPONENT
 ========================= -->
 
-<%- include('partials/ai-chat') %>
-
-<script src="/ai-chat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
 </html>
