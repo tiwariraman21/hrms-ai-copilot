@@ -15,6 +15,7 @@ chatButton.addEventListener('click', () => {
 
 });
 
+
 /* =========================
    SEND MESSAGE FUNCTION
 ========================= */
@@ -22,6 +23,7 @@ chatButton.addEventListener('click', () => {
 async function sendMessage(prompt) {
 
     if (!prompt) return;
+
 
     messages.innerHTML += `
         <div style="margin-bottom:10px;">
@@ -31,87 +33,153 @@ async function sendMessage(prompt) {
 
     messages.scrollTop = messages.scrollHeight;
 
-    const response = await fetch('/ai/chat', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ prompt })
-    });
 
-    const data = await response.json();
+    try {
 
-    messages.innerHTML += `
-        <div style="margin-bottom:10px;">
-            <b>AI:</b> ${data.message || data.reply}
-        </div>
-    `;
+        const response = await fetch('/ai/chat', {
 
-    messages.scrollTop = messages.scrollHeight;
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                prompt: prompt
+            })
+
+        });
+
+
+        const data = await response.json();
+
+
+        messages.innerHTML += `
+            <div style="margin-bottom:10px;">
+                <b>AI:</b> ${data.message || data.reply || 'No response received.'}
+            </div>
+        `;
+
+
+        messages.scrollTop = messages.scrollHeight;
+
+
+    } catch (error) {
+
+        console.error(
+            'AI chat error:',
+            error
+        );
+
+
+        messages.innerHTML += `
+            <div
+                style="
+                    margin-bottom:10px;
+                    color:#DC2626;
+                "
+            >
+                <b>AI:</b>
+                Unable to connect to the AI service.
+            </div>
+        `;
+
+
+        messages.scrollTop =
+            messages.scrollHeight;
+
+    }
+
 }
+
 
 /* =========================
    SEND BUTTON
 ========================= */
 
-sendBtn.addEventListener('click', async () => {
+sendBtn.addEventListener(
+    'click',
+    async () => {
 
-    const prompt = input.value.trim();
+        const prompt =
+            input.value.trim();
 
-    if (!prompt) return;
 
-    input.value = '';
+        if (!prompt) return;
 
-    await sendMessage(prompt);
 
-});
+        input.value = '';
+
+
+        await sendMessage(prompt);
+
+    }
+);
+
 
 /* =========================
    ENTER KEY SUPPORT
 ========================= */
 
-input.addEventListener('keypress', async (e) => {
+input.addEventListener(
+    'keypress',
+    async (e) => {
 
-    if (e.key === 'Enter') {
+        if (e.key === 'Enter') {
 
-        const prompt = input.value.trim();
+            const prompt =
+                input.value.trim();
 
-        if (!prompt) return;
 
-        input.value = '';
+            if (!prompt) return;
 
-        await sendMessage(prompt);
+
+            input.value = '';
+
+
+            await sendMessage(prompt);
+
+        }
+
     }
-});
+);
+
 
 /* =========================
    AI SUGGESTIONS
 ========================= */
 
-suggestionButtons.forEach((button) => {
+const suggestionButtons =
+    document.querySelectorAll(
+        '.ai-suggestion'
+    );
 
-    button.addEventListener('click', async () => {
 
-        const prompt = button.innerText.trim();
+suggestionButtons.forEach(
+    button => {
 
-        await sendMessage(prompt);
+        button.addEventListener(
+            'click',
+            () => {
 
-    });
+                const prompt =
+                    button.innerText.trim();
 
-});
 
-const suggestionButtons = document.querySelectorAll('.ai-suggestion');
+                if (!prompt) return;
 
-suggestionButtons.forEach(button => {
 
-    button.addEventListener('click', async () => {
+                input.value =
+                    prompt;
 
-        const input = document.getElementById('ai-chat-input');
 
-        input.value = button.innerText;
+                // Automatically send
+                // the suggestion.
 
-        // Optional auto-send
-        document.getElementById('ai-send-btn').click();
-    });
+                sendBtn.click();
 
-});
+            }
+        );
+
+    }
+);
