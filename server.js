@@ -21,23 +21,23 @@ const aiRoutes = require('./routes/ai');
 const insightsAgent = require('./services/ai/insightsAgent');
 
 const { requireAuth } = require('./middleware/auth');
-
 const db = require('./db');
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
-/* =========================
+
+/* =========================================================
    VIEW ENGINE
-========================= */
+========================================================= */
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-/* =========================
+
+/* =========================================================
    MIDDLEWARE
-========================= */
+========================================================= */
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -69,62 +69,57 @@ app.use(
 app.use(flash());
 
 app.use((req, res, next) => {
-
-  res.locals.currentUser =
-    req.session.user || null;
-
+  res.locals.currentUser = req.session.user || null;
   next();
-
 });
 
-/* =========================
+
+/* =========================================================
    ROOT
-========================= */
+========================================================= */
 
 app.get('/', (req, res) => {
-
   res.redirect(
     req.session.user
       ? '/dashboard'
       : '/login'
   );
-
 });
 
-/* =========================
+
+/* =========================================================
    AUTH
-========================= */
+========================================================= */
 
 app.use('/', authRoutes);
 
-/* =========================
+
+/* =========================================================
    DASHBOARD
-========================= */
+========================================================= */
 
 app.get(
   '/dashboard',
   requireAuth,
   async (req, res) => {
-
     const user = req.session.user;
 
-    const today =
-      new Date()
-        .toISOString()
-        .slice(0, 10);
+    const today = new Date()
+      .toISOString()
+      .slice(0, 10);
 
-    /* =========================
+
+    /* =====================================================
        AI INSIGHTS
-    ========================= */
+    ===================================================== */
 
     const insights =
-      await insightsAgent.generateInsights(
-        user
-      );
+      await insightsAgent.generateInsights(user);
 
-    /* =========================
+
+    /* =====================================================
        KPI STATS
-    ========================= */
+    ===================================================== */
 
     const empCount = db
       .prepare(`
@@ -132,6 +127,7 @@ app.get(
         FROM employees
       `)
       .get().n;
+
 
     const todayAttendance = db
       .prepare(`
@@ -142,9 +138,9 @@ app.get(
       `)
       .get(today).n;
 
+
     const pendingLeave =
       user.role === 'manager'
-
         ? db
             .prepare(`
               SELECT COUNT(*) AS n
@@ -155,7 +151,6 @@ app.get(
                 AND e.manager_id=?
             `)
             .get(user.employee_id).n
-
         : db
             .prepare(`
               SELECT COUNT(*) AS n
@@ -163,6 +158,7 @@ app.get(
               WHERE status='pending'
             `)
             .get().n;
+
 
     const myToday = db
       .prepare(`
@@ -176,19 +172,18 @@ app.get(
         today
       );
 
+
     const myBalance = db
       .prepare(`
         SELECT leave_balance
         FROM employees
         WHERE id=?
       `)
-      .get(
-        user.employee_id
-      );
+      .get(user.employee_id);
+
 
     const teamSize =
       user.role === 'manager'
-
         ? db
             .prepare(`
               SELECT COUNT(*) AS n
@@ -196,8 +191,8 @@ app.get(
               WHERE manager_id=?
             `)
             .get(user.employee_id).n
-
         : null;
+
 
     const myProjects = db
       .prepare(`
@@ -205,13 +200,11 @@ app.get(
         FROM project_allocations
         WHERE employee_id=?
       `)
-      .get(
-        user.employee_id
-      ).n;
+      .get(user.employee_id).n;
+
 
     const pendingExpenses =
       user.role === 'manager'
-
         ? db
             .prepare(`
               SELECT COUNT(*) AS n
@@ -222,7 +215,6 @@ app.get(
                 AND e.manager_id=?
             `)
             .get(user.employee_id).n
-
         : db
             .prepare(`
               SELECT COUNT(*) AS n
@@ -231,9 +223,9 @@ app.get(
             `)
             .get().n;
 
+
     const pendingTimesheets =
       user.role === 'manager'
-
         ? db
             .prepare(`
               SELECT COUNT(*) AS n
@@ -244,7 +236,6 @@ app.get(
                 AND e.manager_id=?
             `)
             .get(user.employee_id).n
-
         : db
             .prepare(`
               SELECT COUNT(*) AS n
@@ -253,302 +244,404 @@ app.get(
             `)
             .get().n;
 
-    /* =========================
-       DASHBOARD ANALYTICS
-    ========================= */
 
-    /* Attendance Trend */
+    /* =====================================================
+       DASHBOARD ANALYTICS
+    ===================================================== */
+
+
+    /* =====================================================
+       ATTENDANCE TREND
+    ===================================================== */
 
     let attendanceTrend;
 
     if (user.role === 'manager') {
 
-      attendanceTrend = db.prepare(`
-        SELECT
-          a.date,
-          COUNT(*) AS count
-        FROM attendance a
-        JOIN employees e
-          ON e.id = a.employee_id
-        WHERE
-          a.date >= date('now','-6 days')
-          AND a.clock_in IS NOT NULL
-          AND e.manager_id=?
-        GROUP BY a.date
-        ORDER BY a.date
-      `).all(user.employee_id);
+      attendanceTrend = db
+        .prepare(`
+          SELECT
+            a.date,
+            COUNT(*) AS count
+          FROM attendance a
+          JOIN employees e
+            ON e.id = a.employee_id
+          WHERE a.date >= date('now', '-6 days')
+            AND a.clock_in IS NOT NULL
+            AND e.manager_id=?
+          GROUP BY a.date
+          ORDER BY a.date
+        `)
+        .all(user.employee_id);
 
-    } else if (
-      user.role === 'employee'
-    ) {
+    } else if (user.role === 'employee') {
 
-      attendanceTrend = db.prepare(`
-        SELECT
-          date,
-          COUNT(*) AS count
-        FROM attendance
-        WHERE employee_id=?
-          AND date>=date('now','-6 days')
-          AND clock_in IS NOT NULL
-        GROUP BY date
-        ORDER BY date
-      `).all(user.employee_id);
+      attendanceTrend = db
+        .prepare(`
+          SELECT
+            date,
+            COUNT(*) AS count
+          FROM attendance
+          WHERE employee_id=?
+            AND date >= date('now', '-6 days')
+            AND clock_in IS NOT NULL
+          GROUP BY date
+          ORDER BY date
+        `)
+        .all(user.employee_id);
 
     } else {
 
-      attendanceTrend = db.prepare(`
-        SELECT
-          date,
-          COUNT(*) AS count
-        FROM attendance
-        WHERE date>=date('now','-6 days')
-          AND clock_in IS NOT NULL
-        GROUP BY date
-        ORDER BY date
-      `).all();
-
+      attendanceTrend = db
+        .prepare(`
+          SELECT
+            date,
+            COUNT(*) AS count
+          FROM attendance
+          WHERE date >= date('now', '-6 days')
+            AND clock_in IS NOT NULL
+          GROUP BY date
+          ORDER BY date
+        `)
+        .all();
     }
 
-    /* Leave Overview */
+
+    /* =====================================================
+       LEAVE OVERVIEW
+    ===================================================== */
 
     let leaveOverview;
 
     if (user.role === 'manager') {
 
-      leaveOverview = db.prepare(`
-        SELECT
-          lr.status,
-          COUNT(*) AS count
-        FROM leave_requests lr
-        JOIN employees e
-          ON e.id = lr.employee_id
-        WHERE e.manager_id=?
-        GROUP BY lr.status
-      `).all(user.employee_id);
+      leaveOverview = db
+        .prepare(`
+          SELECT
+            lr.status,
+            COUNT(*) AS count
+          FROM leave_requests lr
+          JOIN employees e
+            ON e.id = lr.employee_id
+          WHERE e.manager_id=?
+          GROUP BY lr.status
+        `)
+        .all(user.employee_id);
 
-    } else if (
-      user.role === 'employee'
-    ) {
+    } else if (user.role === 'employee') {
 
-      leaveOverview = db.prepare(`
-        SELECT
-          status,
-          COUNT(*) AS count
-        FROM leave_requests
-        WHERE employee_id=?
-        GROUP BY status
-      `).all(user.employee_id);
+      leaveOverview = db
+        .prepare(`
+          SELECT
+            status,
+            COUNT(*) AS count
+          FROM leave_requests
+          WHERE employee_id=?
+          GROUP BY status
+        `)
+        .all(user.employee_id);
 
     } else {
 
-      leaveOverview = db.prepare(`
-        SELECT
-          status,
-          COUNT(*) AS count
-        FROM leave_requests
-        GROUP BY status
-      `).all();
-
+      leaveOverview = db
+        .prepare(`
+          SELECT
+            status,
+            COUNT(*) AS count
+          FROM leave_requests
+          GROUP BY status
+        `)
+        .all();
     }
 
-    /* Expense Overview */
+
+    /* =====================================================
+       EXPENSE OVERVIEW
+    ===================================================== */
 
     let expenseOverview;
 
     if (user.role === 'manager') {
 
-      expenseOverview = db.prepare(`
-        SELECT
-          ec.status,
-          COUNT(*) AS count
-        FROM expense_claims ec
-        JOIN employees e
-          ON e.id = ec.employee_id
-        WHERE e.manager_id=?
-        GROUP BY ec.status
-      `).all(user.employee_id);
+      expenseOverview = db
+        .prepare(`
+          SELECT
+            ec.status,
+            COUNT(*) AS count
+          FROM expense_claims ec
+          JOIN employees e
+            ON e.id = ec.employee_id
+          WHERE e.manager_id=?
+          GROUP BY ec.status
+        `)
+        .all(user.employee_id);
 
-    } else if (
-      user.role === 'employee'
-    ) {
+    } else if (user.role === 'employee') {
 
-      expenseOverview = db.prepare(`
-        SELECT
-          status,
-          COUNT(*) AS count
-        FROM expense_claims
-        WHERE employee_id=?
-        GROUP BY status
-      `).all(user.employee_id);
+      expenseOverview = db
+        .prepare(`
+          SELECT
+            status,
+            COUNT(*) AS count
+          FROM expense_claims
+          WHERE employee_id=?
+          GROUP BY status
+        `)
+        .all(user.employee_id);
 
     } else {
 
-      expenseOverview = db.prepare(`
-        SELECT
-          status,
-          COUNT(*) AS count
-        FROM expense_claims
-        GROUP BY status
-      `).all();
-
+      expenseOverview = db
+        .prepare(`
+          SELECT
+            status,
+            COUNT(*) AS count
+          FROM expense_claims
+          GROUP BY status
+        `)
+        .all();
     }
 
-      /* =========================
+
+    /* =====================================================
+       PROJECT OVERVIEW
+    ===================================================== */
+
+    let projectOverview;
+
+    if (user.role === 'employee') {
+
+      projectOverview = db
+        .prepare(`
+          SELECT
+            p.id,
+            p.code,
+            p.name,
+            p.client,
+            p.status,
+            p.start_date,
+            p.end_date,
+            pa.allocation_percent
+          FROM projects p
+          JOIN project_allocations pa
+            ON pa.project_id = p.id
+          WHERE pa.employee_id = ?
+          ORDER BY p.status, p.name
+        `)
+        .all(user.employee_id);
+
+    } else if (user.role === 'manager') {
+
+      projectOverview = db
+        .prepare(`
+          SELECT DISTINCT
+            p.id,
+            p.code,
+            p.name,
+            p.client,
+            p.status,
+            p.start_date,
+            p.end_date
+          FROM projects p
+          JOIN project_allocations pa
+            ON pa.project_id = p.id
+          JOIN employees e
+            ON e.id = pa.employee_id
+          WHERE e.manager_id = ?
+             OR p.lead_id = ?
+          ORDER BY p.status, p.name
+        `)
+        .all(
+          user.employee_id,
+          user.employee_id
+        );
+
+    } else {
+
+      /*
+       * HR and ADMIN receive full
+       * organization-wide project access.
+       */
+
+      projectOverview = db
+        .prepare(`
+          SELECT
+            p.id,
+            p.code,
+            p.name,
+            p.client,
+            p.status,
+            p.start_date,
+            p.end_date,
+            p.lead_id,
+            COUNT(DISTINCT pa.employee_id) AS team_size,
+            COALESCE(
+              SUM(pa.allocation_percent),
+              0
+            ) AS total_allocation
+          FROM projects p
+          LEFT JOIN project_allocations pa
+            ON pa.project_id = p.id
+          GROUP BY p.id
+          ORDER BY p.status, p.name
+        `)
+        .all();
+    }
+
+
+    /* =====================================================
        RECENT ACTIVITY
-    ========================= */
+    ===================================================== */
 
     let recentActivity;
 
     if (user.role === 'manager') {
 
-      recentActivity = db.prepare(`
-        SELECT
-          'Leave Request' AS activity_type,
-          e.name AS employee_name,
-          lr.created_at AS activity_date,
-          lr.status AS status
-        FROM leave_requests lr
-        JOIN employees e
-          ON e.id = lr.employee_id
-        WHERE e.manager_id=?
+      recentActivity = db
+        .prepare(`
+          SELECT
+            'Leave Request' AS activity_type,
+            e.name AS employee_name,
+            lr.created_at AS activity_date,
+            lr.status AS status
+          FROM leave_requests lr
+          JOIN employees e
+            ON e.id = lr.employee_id
+          WHERE e.manager_id = ?
 
-        UNION ALL
+          UNION ALL
 
-        SELECT
-          'Expense Claim' AS activity_type,
-          e.name AS employee_name,
-          ec.created_at AS activity_date,
-          ec.status AS status
-        FROM expense_claims ec
-        JOIN employees e
-          ON e.id = ec.employee_id
-        WHERE e.manager_id=?
+          SELECT
+            'Expense Claim' AS activity_type,
+            e.name AS employee_name,
+            ec.created_at AS activity_date,
+            ec.status AS status
+          FROM expense_claims ec
+          JOIN employees e
+            ON e.id = ec.employee_id
+          WHERE e.manager_id = ?
 
-        UNION ALL
+          UNION ALL
 
-        SELECT
-          'Timesheet' AS activity_type,
-          e.name AS employee_name,
-          t.created_at AS activity_date,
-          t.status AS status
-        FROM timesheet_entries t
-        JOIN employees e
-          ON e.id = t.employee_id
-        WHERE e.manager_id=?
+          SELECT
+            'Timesheet' AS activity_type,
+            e.name AS employee_name,
+            t.created_at AS activity_date,
+            t.status AS status
+          FROM timesheet_entries t
+          JOIN employees e
+            ON e.id = t.employee_id
+          WHERE e.manager_id = ?
 
-        ORDER BY activity_date DESC
-        LIMIT 8
-      `).all(
-        user.employee_id,
-        user.employee_id,
-        user.employee_id
-      );
+          ORDER BY activity_date DESC
+          LIMIT 8
+        `)
+        .all(
+          user.employee_id,
+          user.employee_id,
+          user.employee_id
+        );
 
     } else if (user.role === 'employee') {
 
-      recentActivity = db.prepare(`
-        SELECT
-          'Leave Request' AS activity_type,
-          'You' AS employee_name,
-          created_at AS activity_date,
-          status
-        FROM leave_requests
-        WHERE employee_id=?
+      recentActivity = db
+        .prepare(`
+          SELECT
+            'Leave Request' AS activity_type,
+            'You' AS employee_name,
+            created_at AS activity_date,
+            status
+          FROM leave_requests
+          WHERE employee_id = ?
 
-        UNION ALL
+          UNION ALL
 
-        SELECT
-          'Expense Claim' AS activity_type,
-          'You' AS employee_name,
-          created_at AS activity_date,
-          status
-        FROM expense_claims
-        WHERE employee_id=?
+          SELECT
+            'Expense Claim' AS activity_type,
+            'You' AS employee_name,
+            created_at AS activity_date,
+            status
+          FROM expense_claims
+          WHERE employee_id = ?
 
-        UNION ALL
+          UNION ALL
 
-        SELECT
-          'Timesheet' AS activity_type,
-          'You' AS employee_name,
-          created_at AS activity_date,
-          status
-        FROM timesheet_entries
-        WHERE employee_id=?
+          SELECT
+            'Timesheet' AS activity_type,
+            'You' AS employee_name,
+            created_at AS activity_date,
+            status
+          FROM timesheet_entries
+          WHERE employee_id = ?
 
-        ORDER BY activity_date DESC
-        LIMIT 8
-      `).all(
-        user.employee_id,
-        user.employee_id,
-        user.employee_id
-      );
+          ORDER BY activity_date DESC
+          LIMIT 8
+        `)
+        .all(
+          user.employee_id,
+          user.employee_id,
+          user.employee_id
+        );
 
     } else {
 
-      recentActivity = db.prepare(`
-        SELECT
-          'Leave Request' AS activity_type,
-          e.name AS employee_name,
-          lr.created_at AS activity_date,
-          lr.status AS status
-        FROM leave_requests lr
-        JOIN employees e
-          ON e.id = lr.employee_id
+      recentActivity = db
+        .prepare(`
+          SELECT
+            'Leave Request' AS activity_type,
+            e.name AS employee_name,
+            lr.created_at AS activity_date,
+            lr.status AS status
+          FROM leave_requests lr
+          JOIN employees e
+            ON e.id = lr.employee_id
 
-        UNION ALL
+          UNION ALL
 
-        SELECT
-          'Expense Claim' AS activity_type,
-          e.name AS employee_name,
-          ec.created_at AS activity_date,
-          ec.status AS status
-        FROM expense_claims ec
-        JOIN employees e
-          ON e.id = ec.employee_id
+          SELECT
+            'Expense Claim' AS activity_type,
+            e.name AS employee_name,
+            ec.created_at AS activity_date,
+            ec.status AS status
+          FROM expense_claims ec
+          JOIN employees e
+            ON e.id = ec.employee_id
 
-        UNION ALL
+          UNION ALL
 
-        SELECT
-          'Timesheet' AS activity_type,
-          e.name AS employee_name,
-          t.created_at AS activity_date,
-          t.status AS status
-        FROM timesheet_entries t
-        JOIN employees e
-          ON e.id = t.employee_id
+          SELECT
+            'Timesheet' AS activity_type,
+            e.name AS employee_name,
+            t.created_at AS activity_date,
+            t.status AS status
+          FROM timesheet_entries t
+          JOIN employees e
+            ON e.id = t.employee_id
 
-        ORDER BY activity_date DESC
-        LIMIT 8
-      `).all();
-
+          ORDER BY activity_date DESC
+          LIMIT 8
+        `)
+        .all();
     }
 
-    /* =========================
+
+    /* =====================================================
        RENDER DASHBOARD
-    ========================= */
+    ===================================================== */
 
     res.render('dashboard', {
-
       title: 'Dashboard',
 
       user,
 
       stats: {
-
         empCount,
-
         todayAttendance,
-
         pendingLeave,
-
         teamSize,
-
         myProjects,
-
         pendingExpenses,
-
         pendingTimesheets,
-
       },
 
       myToday,
@@ -559,24 +652,21 @@ app.get(
       insights,
 
       analytics: {
-
         attendanceTrend,
-
         leaveOverview,
-
         expenseOverview,
-
         recentActivity,
-
       },
 
+      projectOverview,
     });
+  }
+);
 
-});
 
-/* =========================
+/* =========================================================
    APPLICATION ROUTES
-========================= */
+========================================================= */
 
 app.use('/employees', employeeRoutes);
 app.use('/attendance', attendanceRoutes);
@@ -587,54 +677,44 @@ app.use('/projects', projectRoutes);
 app.use('/expenses', expenseRoutes);
 app.use('/timesheets', timesheetRoutes);
 
-/* =========================
+
+/* =========================================================
    AI ROUTES
-========================= */
+========================================================= */
 
 app.use('/ai', aiRoutes);
 
-/* =========================
+
+/* =========================================================
    ERROR HANDLING
-========================= */
+========================================================= */
 
 app.use((req, res) => {
-
   res.status(404).render('error', {
-
     title: 'Not found',
-
     message: 'The page you requested does not exist.',
-
     user: req.session.user,
-
   });
-
 });
 
-app.use((err, req, res, next) => {
 
+app.use((err, req, res, next) => {
   console.error(err);
 
   res.status(500).render('error', {
-
     title: 'Server error',
-
     message: 'Something went wrong on the server.',
-
     user: req.session?.user,
-
   });
-
 });
 
-/* =========================
+
+/* =========================================================
    START SERVER
-========================= */
+========================================================= */
 
 app.listen(PORT, () => {
-
   console.log(
     `HRMS running at http://localhost:${PORT}`
   );
-
 });
