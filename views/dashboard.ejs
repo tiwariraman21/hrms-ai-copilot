@@ -21,6 +21,7 @@
 
 </head>
 
+
 <body>
 
 <div class="app">
@@ -31,11 +32,13 @@
 
     <%- include('partials/sidebar') %>
 
+
     <!-- =========================
          MAIN CONTENT
     ========================== -->
 
     <main class="main">
+
 
         <!-- =========================
              PAGE HEADER
@@ -67,6 +70,7 @@
 
         </div>
 
+
         <!-- =========================
              KPI CARDS
         ========================== -->
@@ -85,6 +89,7 @@
 
             </div>
 
+
             <div class="stat-card">
 
                 <div class="label">
@@ -97,6 +102,7 @@
 
             </div>
 
+
             <div class="stat-card">
 
                 <div class="label">
@@ -108,6 +114,7 @@
                 </div>
 
             </div>
+
 
             <% if (stats.teamSize !== null) { %>
 
@@ -139,6 +146,7 @@
 
             <% } %>
 
+
             <div class="stat-card">
 
                 <div class="label">
@@ -150,6 +158,7 @@
                 </div>
 
             </div>
+
 
             <div class="stat-card">
 
@@ -165,17 +174,20 @@
 
         </div>
 
+
         <!-- =========================
              TWO COLUMN DASHBOARD
         ========================== -->
 
         <div class="dashboard-two-column">
 
+
             <!-- =========================
                  LEFT COLUMN
             ========================== -->
 
             <div>
+
 
                 <!-- =========================
                      MY DAY
@@ -186,6 +198,7 @@
                     <h2>
                         My Day
                     </h2>
+
 
                     <% if (myToday) { %>
 
@@ -199,6 +212,7 @@
                                 <%= myToday.clock_in || '-' %>
                             </dd>
 
+
                             <dt>
                                 Clock Out
                             </dt>
@@ -206,6 +220,7 @@
                             <dd>
                                 <%= myToday.clock_out || '-' %>
                             </dd>
+
 
                             <dt>
                                 Status
@@ -235,6 +250,7 @@
 
                 </div>
 
+
                 <!-- =========================
                      LEAVE BALANCE
                 ========================== -->
@@ -242,28 +258,23 @@
                 <div class="card">
 
                     <h2>
-
                         Leave Balance
-
                     </h2>
 
                     <div class="stat-card">
 
                         <div class="label">
-
                             Available Leave
-
                         </div>
 
                         <div class="value">
-
                             <%= myBalance %>
-
                         </div>
 
                     </div>
 
                 </div>
+
 
                 <!-- =========================
                      AI INSIGHTS
@@ -272,15 +283,15 @@
                 <div class="card ai-insights-card">
 
                     <h2>
-
                         🤖 AI Insights
-
                     </h2>
+
 
                     <% if (
                         insights &&
                         insights.length
                     ) { %>
+
 
                         <% insights.forEach(insight => { %>
 
@@ -291,6 +302,7 @@
                             </div>
 
                         <% }) %>
+
 
                     <% } else { %>
 
@@ -306,11 +318,13 @@
 
             </div>
 
+
             <!-- =========================
                  RIGHT COLUMN
             ========================== -->
 
             <div>
+
 
                 <!-- =========================
                      QUICK ACTIONS
@@ -319,10 +333,9 @@
                 <div class="card">
 
                     <h2>
-
                         Quick Actions
-
                     </h2>
+
 
                     <div
                         style="
@@ -339,6 +352,7 @@
                             Attendance
                         </a>
 
+
                         <a
                             href="/leave"
                             class="btn"
@@ -346,12 +360,14 @@
                             Leave
                         </a>
 
+
                         <a
                             href="/expenses"
                             class="btn"
                         >
                             Expenses
                         </a>
+
 
                         <a
                             href="/timesheets"
@@ -364,6 +380,7 @@
 
                 </div>
 
+
                 <!-- =========================
                      ACCOUNT
                 ========================== -->
@@ -371,41 +388,32 @@
                 <div class="card">
 
                     <h2>
-
                         My Account
-
                     </h2>
+
 
                     <dl class="profile-grid">
 
                         <dt>
-
                             Name
-
                         </dt>
 
                         <dd>
-
                             <%= user.name %>
-
                         </dd>
 
+
                         <dt>
-
                             Email
-
                         </dt>
 
                         <dd>
-
                             <%= user.email %>
-
                         </dd>
 
+
                         <dt>
-
                             Role
-
                         </dt>
 
                         <dd>
@@ -428,6 +436,7 @@
 
         </div>
 
+
         <!-- =========================
              WORKFORCE ANALYTICS
         ========================== -->
@@ -439,31 +448,29 @@
                 <div>
 
                     <span class="section-eyebrow">
-
                         ANALYTICS
-
                     </span>
 
                     <h2>
-
                         Workforce Overview
-
                     </h2>
 
                     <p>
-
                         A quick overview of workforce
                         activity and trends.
-
                     </p>
 
                 </div>
 
             </div>
 
+
             <div class="analytics-grid">
 
-                <!-- Attendance -->
+
+                <!-- =========================
+                     ATTENDANCE
+                ========================== -->
 
                 <div class="card analytics-card">
 
@@ -472,36 +479,36 @@
                         <div>
 
                             <span class="analytics-label">
-
                                 ATTENDANCE
-
                             </span>
 
                             <h3>
-
                                 7-Day Attendance Trend
-
                             </h3>
 
                         </div>
 
                         <div class="analytics-icon">
-
                             📈
-
                         </div>
 
                     </div>
+
 
                     <div class="chart-container">
 
-                        <canvas id="attendanceChart"></canvas>
+                        <canvas
+                            id="attendanceChart"
+                        ></canvas>
 
                     </div>
 
                 </div>
 
-                <!-- Leave -->
+
+                <!-- =========================
+                     LEAVE
+                ========================== -->
 
                 <div class="card analytics-card">
 
@@ -510,36 +517,36 @@
                         <div>
 
                             <span class="analytics-label">
-
                                 LEAVE
-
                             </span>
 
                             <h3>
-
                                 Leave Overview
-
                             </h3>
 
                         </div>
 
                         <div class="analytics-icon">
-
                             📅
-
                         </div>
 
                     </div>
 
+
                     <div class="chart-container chart-small">
 
-                        <canvas id="leaveChart"></canvas>
+                        <canvas
+                            id="leaveChart"
+                        ></canvas>
 
                     </div>
 
                 </div>
 
-                <!-- Expense -->
+
+                <!-- =========================
+                     EXPENSE
+                ========================== -->
 
                 <div class="card analytics-card">
 
@@ -548,36 +555,36 @@
                         <div>
 
                             <span class="analytics-label">
-
                                 EXPENSES
-
                             </span>
 
                             <h3>
-
                                 Expense Status
-
                             </h3>
 
                         </div>
 
                         <div class="analytics-icon">
-
                             💰
-
                         </div>
 
                     </div>
 
+
                     <div class="chart-container chart-small">
 
-                        <canvas id="expenseChart"></canvas>
+                        <canvas
+                            id="expenseChart"
+                        ></canvas>
 
                     </div>
 
                 </div>
 
-                <!-- Activity -->
+
+                <!-- =========================
+                     PROJECT OVERVIEW
+                ========================== -->
 
                 <div class="card analytics-card">
 
@@ -586,39 +593,170 @@
                         <div>
 
                             <span class="analytics-label">
-
-                                ACTIVITY
-
+                                PROJECTS
                             </span>
 
                             <h3>
-
-                                Recent Activity
-
+                                Project Overview
                             </h3>
 
                         </div>
 
                         <div class="analytics-icon">
-
-                            ⚡
-
+                            📁
                         </div>
 
                     </div>
+
+
+                    <div class="project-list">
+
+
+                        <% if (
+                            analytics &&
+                            analytics.projectOverview &&
+                            analytics.projectOverview.length
+                        ) { %>
+
+
+                            <% analytics.projectOverview.forEach(project => { %>
+
+                                <div class="project-item">
+
+
+                                    <div class="project-main">
+
+                                        <strong>
+                                            <%= project.name %>
+                                        </strong>
+
+
+                                        <span class="project-code">
+
+                                            <%= project.code %>
+
+
+                                            <% if (project.client) { %>
+
+                                                · <%= project.client %>
+
+                                            <% } %>
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="project-meta">
+
+
+                                        <span
+                                            class="badge badge-status-<%= project.status %>"
+                                        >
+
+                                            <%= project.status.replace('_', ' ') %>
+
+                                        </span>
+
+
+                                        <% if (
+                                            user.role === 'employee' &&
+                                            project.allocation_percent != null
+                                        ) { %>
+
+                                            <span class="project-allocation">
+
+                                                <%= project.allocation_percent %>%
+
+                                            </span>
+
+                                        <% } %>
+
+
+                                        <% if (
+                                            user.role === 'hr' ||
+                                            user.role === 'admin'
+                                        ) { %>
+
+                                            <span class="project-allocation">
+
+                                                <%= project.team_size %>
+
+                                                member<%= project.team_size === 1 ? '' : 's' %>
+
+                                            </span>
+
+                                        <% } %>
+
+
+                                    </div>
+
+                                </div>
+
+                            <% }) %>
+
+
+                        <% } else { %>
+
+
+                            <div class="empty">
+
+                                No projects available.
+
+                            </div>
+
+
+                        <% } %>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     RECENT ACTIVITY
+                ========================== -->
+
+                <div class="card analytics-card">
+
+                    <div class="analytics-card-header">
+
+                        <div>
+
+                            <span class="analytics-label">
+                                ACTIVITY
+                            </span>
+
+                            <h3>
+                                Recent Activity
+                            </h3>
+
+                        </div>
+
+                        <div class="analytics-icon">
+                            ⚡
+                        </div>
+
+                    </div>
+
 
                     <div class="activity-list">
 
+
                         <% if (
+                            analytics &&
                             analytics.recentActivity &&
                             analytics.recentActivity.length
                         ) { %>
+
 
                             <% analytics.recentActivity.forEach(activity => { %>
 
                                 <div class="activity-item">
 
                                     <div class="activity-dot"></div>
+
 
                                     <div class="activity-content">
 
@@ -636,9 +774,12 @@
 
                                     </div>
 
+
                                     <div class="activity-status">
 
-                                        <span class="badge badge-status-<%= activity.status %>">
+                                        <span
+                                            class="badge badge-status-<%= activity.status %>"
+                                        >
 
                                             <%= activity.status %>
 
@@ -650,7 +791,9 @@
 
                             <% }) %>
 
+
                         <% } else { %>
+
 
                             <div class="empty">
 
@@ -658,7 +801,9 @@
 
                             </div>
 
+
                         <% } %>
+
 
                     </div>
 
@@ -668,262 +813,367 @@
 
         </div>
 
-    <!-- =========================
-         AI CHAT COMPONENT
-    ========================== -->
 
-    <%- include('partials/ai-chat') %>
+        <!-- =========================
+             AI CHAT COMPONENT
+        ========================== -->
 
-</main>
+        <%- include('partials/ai-chat') %>
+
+
+    </main>
 
 </div>
 
+
+<!-- =========================
+     SCRIPTS
+========================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="/ai-chat.js"></script>
+
 
 <script>
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
 
-    const attendanceData =
-        <%- JSON.stringify(analytics?.attendanceTrend || []) %>;
 
-    const leaveData =
-        <%- JSON.stringify(analytics?.leaveOverview || []) %>;
+        /* =====================================================
+           DATA FROM SERVER
+        ===================================================== */
 
-    const expenseData =
-        <%- JSON.stringify(analytics?.expenseOverview || []) %>;
+        const attendanceData =
+            <%- JSON.stringify(
+                analytics?.attendanceTrend || []
+            ) %>;
 
-    /* =====================================================
-       ATTENDANCE CHART
-    ===================================================== */
 
-    const attendanceCanvas =
-        document.getElementById('attendanceChart');
+        const leaveData =
+            <%- JSON.stringify(
+                analytics?.leaveOverview || []
+            ) %>;
 
-    if (attendanceCanvas && attendanceData.length > 0) {
 
-        new Chart(attendanceCanvas, {
+        const expenseData =
+            <%- JSON.stringify(
+                analytics?.expenseOverview || []
+            ) %>;
 
-            type: 'line',
 
-            data: {
+        /* =====================================================
+           ATTENDANCE CHART
+        ===================================================== */
 
-                labels: attendanceData.map(
-                    item => item.date
-                ),
+        const attendanceCanvas =
+            document.getElementById(
+                'attendanceChart'
+            );
 
-                datasets: [{
 
-                    label: 'Employees',
+        if (
+            attendanceCanvas &&
+            attendanceData.length > 0
+        ) {
 
-                    data: attendanceData.map(
-                        item => item.count
-                    ),
 
-                    borderColor: '#4F46E5',
+            new Chart(
+                attendanceCanvas,
+                {
 
-                    backgroundColor: 'rgba(79,70,229,.12)',
+                    type: 'line',
 
-                    fill: true,
+                    data: {
 
-                    tension: 0.4,
+                        labels:
+                            attendanceData.map(
+                                item => item.date
+                            ),
 
-                    pointRadius: 4,
+                        datasets: [{
 
-                    pointHoverRadius: 6,
+                            label:
+                                'Employees',
 
-                    borderWidth: 3
+                            data:
+                                attendanceData.map(
+                                    item => item.count
+                                ),
 
-                }]
+                            borderColor:
+                                '#4F46E5',
 
-            },
+                            backgroundColor:
+                                'rgba(79,70,229,.12)',
 
-            options: {
+                            fill:
+                                true,
 
-                responsive: true,
+                            tension:
+                                0.4,
 
-                maintainAspectRatio: false,
+                            pointRadius:
+                                4,
 
-                plugins: {
+                            pointHoverRadius:
+                                6,
 
-                    legend: {
+                            borderWidth:
+                                3
 
-                        display: false
-
-                    }
-
-                },
-
-                scales: {
-
-                    x: {
-
-                        grid: {
-
-                            display: false
-
-                        }
+                        }]
 
                     },
 
-                    y: {
 
-                        beginAtZero: true,
+                    options: {
 
-                        ticks: {
+                        responsive:
+                            true,
 
-                            precision: 0
+                        maintainAspectRatio:
+                            false,
+
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    false
+
+                            }
+
+                        },
+
+
+                        scales: {
+
+
+                            x: {
+
+                                grid: {
+
+                                    display:
+                                        false
+
+                                }
+
+                            },
+
+
+                            y: {
+
+                                beginAtZero:
+                                    true,
+
+                                ticks: {
+
+                                    precision:
+                                        0
+
+                                }
+
+                            }
 
                         }
 
                     }
 
                 }
+            );
 
-            }
+        }
 
-        });
 
-    }
+        /* =====================================================
+           LEAVE CHART
+        ===================================================== */
 
-    /* =====================================================
-       LEAVE CHART
-    ===================================================== */
+        const leaveCanvas =
+            document.getElementById(
+                'leaveChart'
+            );
 
-    const leaveCanvas =
-        document.getElementById('leaveChart');
 
-    if (leaveCanvas && leaveData.length > 0) {
+        if (
+            leaveCanvas &&
+            leaveData.length > 0
+        ) {
 
-        new Chart(leaveCanvas, {
 
-            type: 'doughnut',
+            new Chart(
+                leaveCanvas,
+                {
 
-            data: {
+                    type:
+                        'doughnut',
 
-                labels: leaveData.map(
-                    item => item.status
-                ),
 
-                datasets: [{
+                    data: {
 
-                    data: leaveData.map(
-                        item => item.count
-                    ),
+                        labels:
+                            leaveData.map(
+                                item => item.status
+                            ),
 
-                    backgroundColor: [
 
-                        '#4F46E5',
+                        datasets: [{
 
-                        '#16A34A',
+                            data:
+                                leaveData.map(
+                                    item => item.count
+                                ),
 
-                        '#F59E0B',
+                            backgroundColor: [
 
-                        '#DC2626'
+                                '#4F46E5',
 
-                    ],
+                                '#16A34A',
 
-                    borderWidth: 0
+                                '#F59E0B',
 
-                }]
+                                '#DC2626'
 
-            },
+                            ],
 
-            options: {
+                            borderWidth:
+                                0
 
-                responsive: true,
+                        }]
 
-                maintainAspectRatio: false,
+                    },
 
-                cutout: '65%',
 
-                plugins: {
+                    options: {
 
-                    legend: {
+                        responsive:
+                            true,
 
-                        position: 'bottom'
+                        maintainAspectRatio:
+                            false,
 
-                    }
+                        cutout:
+                            '65%',
 
-                }
 
-            }
+                        plugins: {
 
-        });
+                            legend: {
 
-    }
+                                position:
+                                    'bottom'
 
-    /* =====================================================
-       EXPENSE CHART
-    ===================================================== */
+                            }
 
-    const expenseCanvas =
-        document.getElementById('expenseChart');
-
-    if (expenseCanvas && expenseData.length > 0) {
-
-        new Chart(expenseCanvas, {
-
-            type: 'doughnut',
-
-            data: {
-
-                labels: expenseData.map(
-                    item => item.status
-                ),
-
-                datasets: [{
-
-                    data: expenseData.map(
-                        item => item.count
-                    ),
-
-                    backgroundColor: [
-
-                        '#4F46E5',
-
-                        '#16A34A',
-
-                        '#F59E0B',
-
-                        '#DC2626'
-
-                    ],
-
-                    borderWidth: 0
-
-                }]
-
-            },
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                cutout: '65%',
-
-                plugins: {
-
-                    legend: {
-
-                        position: 'bottom'
+                        }
 
                     }
 
                 }
+            );
 
-            }
+        }
 
-        });
+
+        /* =====================================================
+           EXPENSE CHART
+        ===================================================== */
+
+        const expenseCanvas =
+            document.getElementById(
+                'expenseChart'
+            );
+
+
+        if (
+            expenseCanvas &&
+            expenseData.length > 0
+        ) {
+
+
+            new Chart(
+                expenseCanvas,
+                {
+
+                    type:
+                        'doughnut',
+
+
+                    data: {
+
+                        labels:
+                            expenseData.map(
+                                item => item.status
+                            ),
+
+
+                        datasets: [{
+
+                            data:
+                                expenseData.map(
+                                    item => item.count
+                                ),
+
+                            backgroundColor: [
+
+                                '#4F46E5',
+
+                                '#16A34A',
+
+                                '#F59E0B',
+
+                                '#DC2626'
+
+                            ],
+
+                            borderWidth:
+                                0
+
+                        }]
+
+                    },
+
+
+                    options: {
+
+                        responsive:
+                            true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        cutout:
+                            '65%',
+
+
+                        plugins: {
+
+                            legend: {
+
+                                position:
+                                    'bottom'
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
 
     }
-
-});
+);
 
 </script>
+
 
 </body>
 
