@@ -1,18 +1,22 @@
 const rolePermissions = {
 
     admin: [
-        'apply_leave',
-        'get_leave_balance',
-        'submit_expense',
-        'fill_timesheet',
-        'approve_leave',
-        'approve_expense',
-        'view_all_employees',
-        'create_project',
-        'get_work_hours',
-        'get_pending_leaves',
-        'get_absent_employees'
-    ],
+    'apply_leave',
+    'get_leave_balance',
+    'submit_expense',
+    'fill_timesheet',
+
+    // Approval permissions
+    'approve_leave',
+    'approve_expense',
+    'approve_timesheet',
+
+    'view_all_employees',
+    'create_project',
+    'get_work_hours',
+    'get_pending_leaves',
+    'get_absent_employees'
+],
 
     hr: [
         'apply_leave',
