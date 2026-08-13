@@ -6,10 +6,14 @@ const rolePermissions = {
     'submit_expense',
     'fill_timesheet',
 
-    // Approval permissions
     'approve_leave',
+    'approve_all_leaves',
+
     'approve_expense',
+    'approve_all_expenses',
+
     'approve_timesheet',
+    'approve_all_timesheets',
 
     'view_all_employees',
     'create_project',
